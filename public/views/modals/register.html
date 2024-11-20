@@ -1,0 +1,42 @@
+<div class="modal-header">
+    <h5 class="modal-title">Crear Cuenta</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<form onsubmit="registerUser(event)">
+    <div class="modal-body">
+        <div class="mb-3">
+            <label for="registerName" class="form-label">Nombre completo</label>
+            <input type="text" class="form-control" id="registerName" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="registerEmail" class="form-label">Email</label>
+            <input type="email" class="form-control" id="registerEmail" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="registerPassword" class="form-label">Contraseña</label>
+            <input type="password" class="form-control" id="registerPassword" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="confirmPassword" class="form-label">Confirmar Contraseña</label>
+            <input type="password" class="form-control" id="confirmPassword" required>
+        </div>
+
+        <div class="form-check mb-3">
+            <input type="checkbox" class="form-check-input" id="terms" required>
+            <label class="form-check-label" for="terms">Acepto los términos y condiciones</label>
+        </div>
+
+        <div id="registerError" class="alert alert-danger d-none"></div>
+
+        <button type="submit" class="btn btn-primary w-100">Crear Cuenta</button>
+    </div>
+</form>
+
+<div class="modal-footer">
+    <p class="text-center w-100">¿Ya tienes cuenta? <a href="#"  data-bs-toggle="modal"
+        data-bs-target="#loginModal" id="switchToLogin">Inicia sesión aquí</a></p>
+</div>

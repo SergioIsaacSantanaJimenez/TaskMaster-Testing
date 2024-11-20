@@ -1,0 +1,133 @@
+.task-card {
+    transition: transform 0.2s;
+}
+
+.task-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar {
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding-top: 56px;
+    background-color: #f8f9fa;
+}
+
+.main-content {
+    margin-left: 250px;
+    padding-top: 56px;
+}
+
+.task-badge {
+    font-size: 0.8em;
+    padding: 5px 10px;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        display: none;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+}
+
+/* Estilo para el sidebar flotante */
+.sidebar {
+    height: calc(100vh - 88px);
+    position: fixed;
+    top: 72px;
+    left: 16px;
+    width: 250px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    border: none;
+    padding: 12px;
+}
+
+/* Estilos para los items del sidebar */
+.sidebar .list-group-item {
+    border: none;
+    border-radius: 8px;
+    margin-bottom: 4px;
+    transition: all 0.3s ease;
+}
+
+.sidebar .list-group-item:hover {
+    background-color: #f8f9fa;
+    transform: translateX(5px);
+}
+
+.sidebar .list-group-item.active {
+    background-color: #0d6efd;
+    margin-left: 0;
+    margin-right: 0;
+    border-radius: 8px;
+}
+
+/* Contenido principal flotante */
+.main-content {
+    margin-left: 282px;
+    margin-right: 16px;
+    margin-top: 72px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    padding: 24px !important;
+    min-height: calc(100vh - 88px);
+}
+
+/* Ajustes para dispositivos móviles */
+@media (max-width: 768px) {
+    .sidebar {
+        display: none;
+    }
+    .main-content {
+        margin-left: 16px;
+        margin-top: 72px;
+    }
+}
+
+/* Agregar fondo claro */
+body {
+    background-color: #f5f7fb;
+}
+
+/* Para el contenedor de tareas */
+#tasksContainer {
+    position: relative;
+}
+
+/* Para las tarjetas individuales */
+.task-card {
+    position: relative;
+}
+
+/* Para el dropdown */
+.task-card .dropdown {
+    position: relative;
+}
+
+.task-card .dropdown-menu {
+    position: absolute;
+    z-index: 1060; /* Valor alto para asegurar que esté por encima */
+    transform: none !important; /* Previene que Bootstrap modifique la posición */
+    top: 100% !important;
+    right: 0;
+    left: auto !important;
+    will-change: auto !important;
+}
+
+/* Asegurar que la tarjeta no tape el dropdown */
+.col-xl-4, .col-lg-6 {
+    z-index: 1;
+}
+
+.col-xl-4:hover, .col-lg-6:hover {
+    z-index: 2;
+}

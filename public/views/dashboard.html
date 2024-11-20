@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskMaster - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../js/tasks.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/modals.js"></script>
+    <script src="../js/statistics.js"></script>
+    <script src="../js/profile.js"></script>
+
+    <!-- Otra wea para las alertas modificadas y loading-->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.0/dist/sweetalert2.min.css" rel="stylesheet" />
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <!---Calendario-->
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.css' rel='stylesheet' />
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.js'></script>
+
+    <script src="../js/calendar.js"></script>
+    <style>
+        .task-card {
+            transition: transform 0.2s;
+        }
+
+        .task-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding-top: 56px;
+            background-color: #f8f9fa;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding-top: 56px;
+        }
+
+        .task-badge {
+            font-size: 0.8em;
+            padding: 5px 10px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top border-bottom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">TaskMaster</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item d-lg-none">
+                        <a class="nav-link" href="/dashboard">Mis Tareas</a>
+                    </li>
+                    <li class="nav-item d-lg-none">
+                        <a class="nav-link" href="#statistics">Estadísticas</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <div class="dropdown me-3">
+                        <button class="btn btn-link text-dark text-decoration-none dropdown-toggle" type="button"
+                            id="userDropdown" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i>
+                            <span class="ms-2" id="userName">ERROR</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#profile"><i class="bi bi-person me-2"></i>Perfil</a>
+                            </li>
+                            <li><a class="dropdown-item" href="#settings"><i
+                                        class="bi bi-trophy me-2"></i>Update to pro</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item text-danger" href="#" onclick="logout()"><i
+                                        class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <div class="sidebar col-lg-2 col-md-3 border-end px-0">
+        <div class="list-group list-group-flush">
+            <a href="/dashboard" class="list-group-item list-group-item-action active">
+                <i class="bi bi-list-task me-2"></i>Mis Tareas
+            </a>
+            <a href="#statistics" class="list-group-item list-group-item-action">
+                <i class="bi bi-graph-up me-2"></i>Estadísticas
+            </a>
+            <a href="#calendar" class="list-group-item list-group-item-action">
+                <i class="bi bi-calendar me-2"></i>Calendario
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content p-4">
+        <br><br>
+        <!-- Header Section -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3">Mis Tareas</h1>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createTaskModal">
+                <i class="bi bi-plus-lg"></i> Nueva Tarea
+            </button>
+        </div>
+
+        <!-- Filters -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control" placeholder="Buscar tareas...">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <select class="form-select">
+                    <option value="">Todos los estados</option>
+                    <option value="pendiente">Pendiente</option>
+                    <option value="en_progreso">En Progreso</option>
+                    <option value="completada">Completada</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <select class="form-select">
+                    <option value="">Ordenar por</option>
+                    <option value="date">Fecha</option>
+                    <option value="priority">Prioridad</option>
+                    <option value="name">Nombre</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Tasks Grid -->
+        <div class="row g-4" id="tasksContainer">
+            <!-- Las tareas se insertarán aquí dinámicamente -->
+        </div>
+    </main>
+
+    <!-- Modal de Edición -->
+    <div class="modal fade" id="editTaskModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Tarea</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="editTaskTitle" class="form-label">Título</label>
+                        <input type="text" class="form-control" id="editTaskTitle" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editTaskDescription" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="editTaskDescription" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editTaskDueDate" class="form-label">Fecha de Vencimiento</label>
+                        <input type="date" class="form-control" id="editTaskDueDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editTaskPriority" class="form-label">Prioridad</label>
+                        <select class="form-select" id="editTaskPriority" required>
+                            <option value="baja">Baja</option>
+                            <option value="media">Media</option>
+                            <option value="alta">Alta</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editTaskStatus" class="form-label">Estado</label>
+                        <select class="form-select" id="editTaskStatus" required>
+                            <option value="pendiente">Pendiente</option>
+                            <option value="en_progreso">En Progreso</option>
+                            <option value="completada">Completada</option>
+                        </select>
+                    </div>
+                    <div id="editTaskError" class="alert alert-danger d-none"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="updateTask()">Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Creación -->
+    <div id="createTaskModal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- El contenido se cargará dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay de carga -->
+    <div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 9999; justify-content: center; align-items: center;">
+        <lottie-player id="loadingAnimation" src="/animation.json" background="transparent" speed="1" style="width: 300px; height: 300px"></lottie-player>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</body>
+
+</html>

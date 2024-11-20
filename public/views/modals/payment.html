@@ -1,0 +1,39 @@
+<!-- views/modals/payment.html -->
+<div class="modal-header">
+    <h5 class="modal-title">Realizar Pago</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <form id="paymentForm">
+        <div class="mb-3">
+            <label for="cardName" class="form-label">Nombre en la Tarjeta</label>
+            <input type="text" class="form-control" id="cardName" name="cardName" required>
+        </div>
+        <div class="mb-3">
+            <label for="cardNumber" class="form-label">Número de Tarjeta</label>
+            <input type="text" class="form-control" id="cardNumber" name="cardNumber" required pattern="[0-9]{16}">
+        </div>
+        <div class="row mb-3">
+            <div class="col-6">
+                <label for="expiryDate" class="form-label">Fecha de Expiración</label>
+                <input type="text" class="form-control" id="expiryDate" name="expiryDate" placeholder="MM/YY" required>
+            </div>
+            <div class="col-6">
+                <label for="cvv" class="form-label">CVV</label>
+                <input type="text" class="form-control" id="cvv" name="cvv" required pattern="[0-9]{3,4}">
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="plan" class="form-label">Plan Seleccionado</label>
+            <select class="form-select" id="plan" name="plan" required>
+                <option value="pro">Plan Pro - $9.99/mes</option>
+                <option value="business">Plan Empresas - $29.99/mes</option>
+            </select>
+        </div>
+        <div id="paymentError" class="alert alert-danger d-none"></div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+    <button type="submit" form="paymentForm" class="btn btn-primary">Procesar Pago</button>
+</div>

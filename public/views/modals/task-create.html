@@ -1,0 +1,40 @@
+<!-- views/modals/task-create.html -->
+<div class="modal-header">
+    <h5 class="modal-title">Nueva Tarea</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <div class="mb-3">
+        <label for="taskTitle" class="form-label">Título</label>
+        <input type="text" class="form-control" id="taskTitle" required>
+    </div>
+    <div class="mb-3">
+        <label for="taskDescription" class="form-label">Descripción</label>
+        <textarea class="form-control" id="taskDescription" rows="3"></textarea>
+    </div>
+    <div class="mb-3">
+        <label for="taskDueDate" class="form-label">Fecha de Vencimiento</label>
+        <input type="date" class="form-control" id="taskDueDate" required>
+    </div>
+    <div class="mb-3">
+        <label for="taskPriority" class="form-label">Prioridad</label>
+        <select class="form-select" id="taskPriority" required>
+            <option value="baja">Baja</option>
+            <option value="media">Media</option>
+            <option value="alta">Alta</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="taskStatus" class="form-label">Estado</label>
+        <select class="form-select" id="taskStatus" required>
+            <option value="pendiente">Pendiente</option>
+            <option value="en_progreso">En Progreso</option>
+            <option value="completada">Completada</option>
+        </select>
+    </div>
+    <div id="createTaskError" class="alert alert-danger d-none"></div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+    <button type="button" class="btn btn-primary" onclick="createTask()">Crear Tarea</button>
+</div>

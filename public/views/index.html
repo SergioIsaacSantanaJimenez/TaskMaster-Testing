@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TaskMaster - Gestiona tus tareas de forma eficiente</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.0/dist/sweetalert2.min.css"
+      rel="stylesheet"
+    />
+    <!-- Otra wea para las alertas modificadas-->
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <!--- Wea para loading-->
+    <script src="../js/modals.js"></script>
+    <link rel="stylesheet" href="../css/style.css" />
+    <script src="../js/auth.js"></script>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="#">TaskMaster</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto" id="navLinks">
+            <li class="nav-item">
+              <a class="nav-link" href="#features">Características</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#pricing">Precios</a>
+            </li>
+          </ul>
+          <!-- Botones para usuario NO autenticado -->
+          <div class="d-flex auth-buttons" id="authButtons">
+            <button
+              class="btn btn-outline-primary me-2"
+              data-bs-toggle="modal"
+              data-bs-target="#loginModal"
+            >
+              Iniciar Sesión
+            </button>
+            <button
+              class="btn btn-primary"
+              data-bs-toggle="modal"
+              data-bs-target="#registerModal"
+            >
+              Registrarse
+            </button>
+          </div>
+          <!-- Botones para usuario autenticado (inicialmente oculto) -->
+          <div class="d-flex auth-buttons ms-auto d-none" id="userButtons">
+            <button
+              class="btn btn-outline-primary me-2"
+              onclick="window.location.href='/dashboard'"
+            >
+              Volver al Dashboard
+            </button>
+            <button class="btn btn-primary" onclick="logout()">
+              Cerrar Sesión
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-6">
+            <h1 class="display-4 fw-bold mb-4">
+              Organiza tu trabajo, mejora tu productividad
+            </h1>
+            <p class="lead mb-4">
+              TaskMaster te ayuda a gestionar tus tareas de manera eficiente,
+              permitiéndote enfocarte en lo que realmente importa.
+            </p>
+            <button
+              class="btn btn-light btn-lg"
+              data-bs-toggle="modal"
+              data-bs-target="#registerModal"
+            >
+              Comienza Gratis
+            </button>
+          </div>
+          <div class="col-lg-6">
+            <img
+              src="../images/logo.png"
+              alt="Task Management"
+              class="img-fluid rounded"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-5" id="features">
+      <div class="container">
+        <h2 class="text-center mb-5">Características Principales</h2>
+        <div class="row g-4">
+          <div class="col-md-4">
+            <div class="feature-icon">
+              <i class="bi bi-list-check fs-2"></i>
+            </div>
+            <h3>Gestión Simple</h3>
+            <p>
+              Organiza tus tareas con una interfaz intuitiva y fácil de usar.
+            </p>
+          </div>
+          <div class="col-md-4">
+            <div class="feature-icon">
+              <i class="bi bi-clock-history fs-2"></i>
+            </div>
+            <h3>Seguimiento de Tiempo</h3>
+            <p>
+              Controla el tiempo dedicado a cada tarea y mejora tu
+              productividad.
+            </p>
+          </div>
+          <div class="col-md-4">
+            <div class="feature-icon">
+              <i class="bi bi-graph-up fs-2"></i>
+            </div>
+            <h3>Estadísticas</h3>
+            <p>Visualiza tu progreso con estadísticas detalladas y reportes.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="bg-light py-5" id="pricing">
+      <div class="container">
+        <h2 class="text-center mb-5">Planes y Precios</h2>
+        <div class="row g-4">
+          <div class="col-md-4">
+            <div class="card pricing-card h-100">
+              <div class="card-body text-center">
+                <h5 class="card-title">Básico</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Gratis</h6>
+                <ul class="list-unstyled mt-3 mb-4">
+                  <li>Hasta 10 tareas</li>
+                  <li>Funciones básicas</li>
+                  <li>Soporte por email</li>
+                </ul>
+                <button
+                  class="btn btn-outline-primary"
+                  data-bs-toggle="modal"
+                  data-bs-target="#loginModal"
+                >
+                  Empezar Gratis
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card pricing-card h-100 border-primary">
+              <div class="card-body text-center">
+                <h5 class="card-title">Pro</h5>
+                <h6 class="card-subtitle mb-2 text-muted">$9.99/mes</h6>
+                <ul class="list-unstyled mt-3 mb-4">
+                  <li>Tareas ilimitadas</li>
+                  <li>Estadísticas avanzadas</li>
+                  <li>Soporte prioritario</li>
+                </ul>
+                <button
+                  class="btn btn-primary"
+                  data-bs-toggle="modal"
+                  data-bs-target="#paymentModal"
+                >
+                  Comenzar
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card pricing-card h-100">
+              <div class="card-body text-center">
+                <h5 class="card-title">Empresas</h5>
+                <h6 class="card-subtitle mb-2 text-muted">$29.99/mes</h6>
+                <ul class="list-unstyled mt-3 mb-4">
+                  <li>Todas las funciones Pro</li>
+                  <li>Usuarios ilimitados</li>
+                  <li>Soporte 24/7</li>
+                </ul>
+                <button
+                  class="btn btn-outline-primary"
+                  data-bs-toggle="modal"
+                  data-bs-target="#paymentModal"
+                >
+                  Contactar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section py-5">
+      <div class="container text-center">
+        <h2 class="mb-4">¿Listo para mejorar tu productividad?</h2>
+        <p class="lead mb-4">
+          Únete a miles de usuarios que ya están organizando mejor su tiempo
+        </p>
+        <button
+          class="btn btn-primary btn-lg"
+          data-bs-toggle="modal"
+          data-bs-target="#registerModal"
+        >
+          Comienza Ahora
+        </button>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            <h5>TaskMaster</h5>
+            <p class="small">La mejor manera de gestionar tus tareas</p>
+          </div>
+          <div class="col-md-6 text-md-end">
+            <ul class="list-inline mb-0">
+              <li class="list-inline-item">
+                <a href="#" class="text-light">Términos</a>
+              </li>
+              <li class="list-inline-item">
+                <a href="#" class="text-light">Privacidad</a>
+              </li>
+              <li class="list-inline-item">
+                <a href="#" class="text-light">Contacto</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Modal placeholders -->
+    <div class="modal fade" id="loginModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <!-- Login form will be loaded here dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="registerModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <!-- Register form will be loaded here dynamically -->
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="paymentModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <!-- Payment form will be loaded here dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Overlay de carga -->
+    <div
+      id="loadingOverlay"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+      "
+    >
+      <lottie-player
+        id="loadingAnimation"
+        src="/animation.json"
+        background="transparent"
+        speed="1"
+        style="width: 300px; height: 300px"
+      ></lottie-player>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  </body>
+</html>
