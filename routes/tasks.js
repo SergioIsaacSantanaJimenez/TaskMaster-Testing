@@ -124,5 +124,33 @@ router.delete('/api/tasks/:id', authenticateToken, async (req, res) => {
     }
 });
 
+// Actualizar fecha de tarea
+router.patch('/api/tasks/:id', authenticateToken, async (req, res) => {
+    try {
+        console.log('Actualizando fecha de tarea:', req.params.id);
+        console.log('Nueva fecha:', req.body.dueDate);
+
+        const task = await Task.findOneAndUpdate(
+            { 
+                _id: req.params.id,
+                userId: req.user.userId 
+            },
+            { dueDate: new Date(req.body.dueDate) },
+            { new: true }
+        );
+        
+        if (!task) {
+            return res.status(404).json({ error: 'Tarea no encontrada' });
+        }
+
+        console.log('Fecha de tarea actualizada:', task);
+        res.json(task);
+    } catch (error) {
+        console.error('Error al actualizar fecha de tarea:', error);
+        res.status(500).json({ error: 'Error al actualizar fecha de tarea' });
+    }
+});
+
+
 module.exports = router;
 
