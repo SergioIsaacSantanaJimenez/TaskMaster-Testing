@@ -182,7 +182,7 @@ async function loadCalendarContent() {
             slotMinTime: '08:00:00',
             slotMaxTime: '20:00:00',
             dayMaxEvents: true,
-            weekNumbers: true,
+            weekNumbers: false,
             firstDay: 1, // Lunes como primer día
             buttonText: {
                 today: 'Hoy',
