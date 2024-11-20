@@ -1,355 +1,501 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TaskMaster - Gestiona tus tareas de forma eficiente</title>
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="../css/index.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.0/dist/sweetalert2.min.css"
+      rel="stylesheet"
+    />
+    <!-- Otra wea para las alertas modificadas-->
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <!--- Wea para loading-->
     <script src="../js/modals.js"></script>
+    <link rel="stylesheet" href="../css/index.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <script src="../js/auth.js"></script>
     <style>
-        .hero-section {
-            background: linear-gradient(135deg, #6B73FF 0%, #000DFF 100%);
-            padding: 100px 0;
-            color: white;
-        }
+      .hero-section {
+        background: linear-gradient(135deg, #6b73ff 0%, #000dff 100%);
+        padding: 100px 0;
+        color: white;
+      }
     </style>
-</head>
-<body>
+  </head>
+
+  <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg fixed-top custom-navbar">
-        <div class="container">
-            <a class="navbar-brand" href="#">
-                <i class="bi bi-check-square me-2"></i>TaskMaster
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
+      <div class="container">
+        <a class="navbar-brand" href="#">
+          <i class="bi bi-check-square me-2"></i>TaskMaster
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="#features">Características</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#pricing">Precios</a>
+            </li>
+          </ul>
+          <div class="d-flex">
+            <button
+              class="btn nav-btn-login me-2"
+              data-bs-toggle="modal"
+              data-bs-target="#loginModal"
+            >
+              Iniciar Sesión
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#features">Características</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#pricing">Precios</a>
-                    </li>
-                </ul>
-                <div class="d-flex">
-                    <button class="btn nav-btn-login me-2" data-bs-toggle="modal" data-bs-target="#loginModal">
-                        Iniciar Sesión
-                    </button>
-                    <button class="btn nav-btn-register" data-bs-toggle="modal" data-bs-target="#registerModal">
-                        Registrarse
-                    </button>
-                </div>
-            </div>
+            <button
+              class="btn nav-btn-register"
+              data-bs-toggle="modal"
+              data-bs-target="#registerModal"
+            >
+              Registrarse
+            </button>
+          </div>
+          <!-- Botones para usuario autenticado (inicialmente oculto) -->
+          <div class="d-flex auth-buttons ms-auto d-none" id="userButtons">
+            <button
+              class="btn btn-outline-primary me-2"
+              onclick="window.location.href='/dashboard'"
+            >
+              Volver al Dashboard
+            </button>
+            <button class="btn btn-primary" onclick="logout()">
+              Cerrar Sesión
+            </button>
+          </div>
         </div>
+      </div>
     </nav>
 
     <!-- Hero Section -->
     <section class="hero-section">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6">
-                    <span class="badge text-bg-primary mb-2">¡Para estudiantes como tú! 🎓</span>
-                    <h1 class="display-4 fw-bold mb-3">¿Otro café para aguantar la noche?<br>
-                    <span class="highlight">Mejor organiza tu vida</span></h1>
-                    <p class="lead mb-4">Deja todo en nuestras mano. Aprovecha el tiempo, relájate y aprueba todo.</p>
-                    <button class="btn btn-light btn-lg custom-hover" data-bs-toggle="modal" data-bs-target="#registerModal">
-                        <span class="button-text">Comienza Gratis</span>
-                        <i class="bi bi-person-add svg"></i>
-                    </button>
-                </div>
-                <div class="col-lg-6">
-                    <img src="../images/logo.png" alt="Task Management" class="img-fluid rounded">
-                </div>
-            </div>
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-6">
+            <span class="badge text-bg-primary mb-2"
+              >¡Para estudiantes como tú! 🎓</span
+            >
+            <h1 class="display-4 fw-bold mb-3">
+              ¿Otro café para aguantar la noche?<br />
+              <span class="highlight">Mejor organiza tu vida</span>
+            </h1>
+            <p class="lead mb-4">
+              Deja todo en nuestras mano. Aprovecha el tiempo, relájate y
+              aprueba todo.
+            </p>
+            <button
+              class="btn btn-light btn-lg custom-hover"
+              data-bs-toggle="modal"
+              data-bs-target="#registerModal"
+            >
+              <span class="button-text">Comienza Gratis</span>
+              <i class="bi bi-person-add svg"></i>
+            </button>
+          </div>
+          <div class="col-lg-6">
+            <img
+              src="../images/logo.png"
+              alt="Task Management"
+              class="img-fluid rounded"
+            />
+          </div>
         </div>
+      </div>
     </section>
 
     <!-- Features Section -->
     <section class="features-section py-5" id="features">
-        <div class="container">
-            <div class="text-center mb-5">
-                <span class="badge feature-badge mb-2">Funcionalidades</span>
-                <h2 class="section-title">Todo lo que necesitas para sobrevivir el semestre</h2>
-                <p class="section-subtitle">Porque sabemos que la vida universitaria no es fácil</p>
-            </div>
-            
-            <div class="row g-4">
-                <!-- Feature 1 -->
-                <div class="col-md-4">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="bi bi-calendar-check fs-2"></i>
-                        </div>
-                        <h3>Organización Pro</h3>
-                        <p>Olvídate de las notas en servilletas. Organiza tus trabajos, exámenes y entregas como todo un master.</p>
-                        <ul class="feature-list">
-                            <li><i class="bi bi-check-circle-fill"></i> Calendario integrado</li>
-                            <li><i class="bi bi-check-circle-fill"></i> Recordatorios inteligentes</li>
-                            <li><i class="bi bi-check-circle-fill"></i> Priorización automática</li>
-                        </ul>
-                    </div>
-                </div>
-    
-                <!-- Feature 2 -->
-                <div class="col-md-4">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="bi bi-alarm fs-2"></i>
-                        </div>
-                        <h3>Control del Tiempo</h3>
-                        <p>¿Procrastinando? Tranqui, te ayudamos a administrar tu tiempo como un profesional.</p>
-                        <ul class="feature-list">
-                            <li><i class="bi bi-check-circle-fill"></i> Temporizador Pomodoro</li>
-                            <li><i class="bi bi-check-circle-fill"></i> Tracking de estudio</li>
-                            <li><i class="bi bi-check-circle-fill"></i> Alertas personalizadas</li>
-                        </ul>
-                    </div>
-                </div>
-    
-                <!-- Feature 3 -->
-                <div class="col-md-4">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="bi bi-graph-up fs-2"></i>
-                        </div>
-                        <h3>Estadísticas Chidas</h3>
-                        <p>Visualiza tu progreso y presume tus logros como influencer de la productividad.</p>
-                        <ul class="feature-list">
-                            <li><i class="bi bi-check-circle-fill"></i> Gráficos de progreso</li>
-                            <li><i class="bi bi-check-circle-fill"></i> Análisis de hábitos</li>
-                            <li><i class="bi bi-check-circle-fill"></i> Reportes semanales</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+      <div class="container">
+        <div class="text-center mb-5">
+          <span class="badge feature-badge mb-2">Funcionalidades</span>
+          <h2 class="section-title">
+            Todo lo que necesitas para sobrevivir el semestre
+          </h2>
+          <p class="section-subtitle">
+            Porque sabemos que la vida universitaria no es fácil
+          </p>
         </div>
+
+        <div class="row g-4">
+          <!-- Feature 1 -->
+          <div class="col-md-4">
+            <div class="feature-card">
+              <div class="feature-icon">
+                <i class="bi bi-calendar-check fs-2"></i>
+              </div>
+              <h3>Organización Pro</h3>
+              <p>
+                Olvídate de las notas en servilletas. Organiza tus trabajos,
+                exámenes y entregas como todo un master.
+              </p>
+              <ul class="feature-list">
+                <li>
+                  <i class="bi bi-check-circle-fill"></i> Calendario integrado
+                </li>
+                <li>
+                  <i class="bi bi-check-circle-fill"></i> Recordatorios
+                  inteligentes
+                </li>
+                <li>
+                  <i class="bi bi-check-circle-fill"></i> Priorización
+                  automática
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Feature 2 -->
+          <div class="col-md-4">
+            <div class="feature-card">
+              <div class="feature-icon">
+                <i class="bi bi-alarm fs-2"></i>
+              </div>
+              <h3>Control del Tiempo</h3>
+              <p>
+                ¿Procrastinando? Tranqui, te ayudamos a administrar tu tiempo
+                como un profesional.
+              </p>
+              <ul class="feature-list">
+                <li>
+                  <i class="bi bi-check-circle-fill"></i> Temporizador Pomodoro
+                </li>
+                <li>
+                  <i class="bi bi-check-circle-fill"></i> Tracking de estudio
+                </li>
+                <li>
+                  <i class="bi bi-check-circle-fill"></i> Alertas personalizadas
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Feature 3 -->
+          <div class="col-md-4">
+            <div class="feature-card">
+              <div class="feature-icon">
+                <i class="bi bi-graph-up fs-2"></i>
+              </div>
+              <h3>Estadísticas Chidas</h3>
+              <p>
+                Visualiza tu progreso y presume tus logros como influencer de la
+                productividad.
+              </p>
+              <ul class="feature-list">
+                <li>
+                  <i class="bi bi-check-circle-fill"></i> Gráficos de progreso
+                </li>
+                <li>
+                  <i class="bi bi-check-circle-fill"></i> Análisis de hábitos
+                </li>
+                <li>
+                  <i class="bi bi-check-circle-fill"></i> Reportes semanales
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- Pricing Section -->
     <section class="pricing-section py-5" id="pricing">
-        <div class="container">
-            <div class="text-center mb-5">
-                <span class="pricing-badge mb-2">Planes Disponibles</span>
-                <h2 class="section-title">Nuestras Membresias</h2>
-                <p class="section-subtitle">Porque sabemos que la beca no da para tanto</p>
-            </div>
-    
-            <div class="row g-4 pricing-wrapper justify-content-center">
-                <!-- Plan Básico -->
-                <div class="col-md-4">
-                    <div class="pricing-card">
-                        <div class="pricing-header">
-                            <div class="pricing-icon">
-                                <i class="bi bi-mortarboard"></i>
-                            </div>
-                            <h5>Plan 1</h5>
-                            <div class="price">Gratis<span class="period">/siempre</span></div>
-                        </div>
-                        <div class="pricing-features">
-                            <ul>
-                                <li><i class="bi bi-check-circle-fill"></i> Hasta 10 tareas activas</li>
-                                <li><i class="bi bi-check-circle-fill"></i> Recordatorios básicos</li>
-                                <li class="disabled"><i class="bi bi-x-circle-fill"></i> Estadísticas avanzadas</li>
-                                <li class="disabled"><i class="bi bi-x-circle-fill"></i> Sincronización</li>
-                            </ul>
-                        </div>
-                        <button class="btn pricing-btn" data-bs-toggle="modal" data-bs-target="#loginModal">
-                            Empezar Gratis
-                        </button>
-                    </div>
-                </div>
-    
-                <!-- Plan Pro -->
-                <div class="col-md-4">
-                    <div class="pricing-card">
-                        <div class="popular-badge">Más Popular</div>
-                        <div class="pricing-header">
-                            <div class="pricing-icon">
-                                <i class="bi bi-star"></i>
-                            </div>
-                            <h5>Plan 2</h5>
-                            <div class="price">$9.99<span class="period">/mes</span></div>
-                            <div class="student-discount">Descuento estudiante: $4.99/mes</div>
-                        </div>
-                        <div class="pricing-features">
-                            <ul>
-                                <li><i class="bi bi-check-circle-fill"></i> Tareas ilimitadas</li>
-                                <li><i class="bi bi-check-circle-fill"></i> Estadísticas pro</li>
-                                <li><i class="bi bi-check-circle-fill"></i> 5MB de Almacenamiento</li>
-                                <li><i class="bi bi-check-circle-fill"></i> Sincronización</li>
-                            </ul>
-                        </div>
-                        <button class="btn pricing-btn btn-popular" data-bs-toggle="modal" data-bs-target="#subscriptionModal">
-                            Adquirir
-                        </button>
-                    </div>
-                </div>
-            </div>
+      <div class="container">
+        <div class="text-center mb-5">
+          <span class="pricing-badge mb-2">Planes Disponibles</span>
+          <h2 class="section-title">Nuestras Membresias</h2>
+          <p class="section-subtitle">
+            Porque sabemos que la beca no da para tanto
+          </p>
         </div>
-    </section>
 
+        <div class="row g-4 pricing-wrapper justify-content-center">
+          <!-- Plan Básico -->
+          <div class="col-md-4">
+            <div class="pricing-card">
+              <div class="pricing-header">
+                <div class="pricing-icon">
+                  <i class="bi bi-star"></i>
+                </div>
+                <h5>Plan Básico</h5>
+                <div class="price">
+                  Gratis<span class="period">/siempre</span>
+                </div>
+              </div>
+              <div class="pricing-features">
+                <ul>
+                  <li>
+                    <i class="bi bi-check-circle-fill"></i> Hasta 10 tareas
+                  </li>
+                  <li>
+                    <i class="bi bi-check-circle-fill"></i> Funciones básicas
+                  </li>
+                  <li>
+                    <i class="bi bi-check-circle-fill"></i> Soporte por email
+                  </li>
+                </ul>
+              </div>
+              <button
+                class="btn pricing-btn"
+                data-bs-toggle="modal"
+                data-bs-target="#loginModal"
+              >
+                Empezar Gratis
+              </button>
+            </div>
+          </div>
+
+          <!-- Plan Pro -->
+          <div class="col-md-4">
+            <div class="pricing-card">
+              <div class="popular-badge">Más Popular</div>
+              <div class="pricing-header">
+                <div class="pricing-icon">
+                  <i class="bi bi-star"></i>
+                </div>
+                <h5>Plan Pro</h5>
+                <div class="price">$9.99<span class="period">/mes</span></div>
+                <div class="student-discount">
+                  Descuento estudiante: $4.99/mes
+                </div>
+              </div>
+              <div class="pricing-features">
+                <ul>
+                  <li>
+                    <i class="bi bi-check-circle-fill"></i> Tareas ilimitadas
+                  </li>
+                  <li>
+                    <i class="bi bi-check-circle-fill"></i> Estadísticas pro
+                  </li>
+                  <li>
+                    <i class="bi bi-check-circle-fill"></i> 5MB de
+                    Almacenamiento
+                  </li>
+                  <li>
+                    <i class="bi bi-check-circle-fill"></i> Sincronización
+                  </li>
+                </ul>
+              </div>
+              <button
+                class="btn pricing-btn btn-popular"
+                data-bs-toggle="modal"
+                data-bs-target="#subscriptionModal"
+              >
+                Adquirir
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
     <!-- CTA Section -->
     <section class="cta-section">
-        <div class="container">
-            <div class="cta-wrapper">
-                <div class="cta-content text-center">
-                    <span class="cta-badge">Es el cambio que mereces</span>
-                    <h2 class="cta-title">¿Cansado de entregar todo a última hora?</h2>
-                    <p class="cta-text">Únete a una cantidad inespecificada de estudiantes que dejaron de vivir al límite</p>
-                    
-                    <div class="cta-features">
-                        <div class="cta-feature">
-                            <i class="bi bi-clock"></i>
-                            <span>Ahorra 10+ horas/semana</span>
-                        </div>
-                        <div class="cta-feature">
-                            <i class="bi bi-emoji-smile"></i>
-                            <span>Reduce tu estrés 90%</span>
-                        </div>
-                        <div class="cta-feature">
-                            <i class="bi bi-trophy"></i>
-                            <span>Mejora tus calificaciones</span>
-                        </div>
-                    </div>
-    
-                    <button class="btn cta-button" data-bs-toggle="modal" data-bs-target="#registerModal">
-                        <span>¡Quiero organizarme ya!</span>
-                        <i class="bi bi-arrow-right"></i>
-                    </button>
-                    
-                    <div class="cta-trust">
-                        <div class="trust-item">
-                            <i class="bi bi-shield-check"></i>
-                            <span>Cancela cuando quieras</span>
-                        </div>
-                    </div>
-                </div>
+      <div class="container">
+        <div class="cta-wrapper">
+          <div class="cta-content text-center">
+            <span class="cta-badge">Es el cambio que mereces</span>
+            <h2 class="cta-title">¿Cansado de entregar todo a última hora?</h2>
+            <p class="cta-text">
+              Únete a una cantidad inespecificada de estudiantes que dejaron de
+              vivir al límite
+            </p>
+
+            <div class="cta-features">
+              <div class="cta-feature">
+                <i class="bi bi-clock"></i>
+                <span>Ahorra 10+ horas/semana</span>
+              </div>
+              <div class="cta-feature">
+                <i class="bi bi-emoji-smile"></i>
+                <span>Reduce tu estrés 90%</span>
+              </div>
+              <div class="cta-feature">
+                <i class="bi bi-trophy"></i>
+                <span>Mejora tus calificaciones</span>
+              </div>
             </div>
+
+            <button
+              class="btn cta-button"
+              data-bs-toggle="modal"
+              data-bs-target="#registerModal"
+            >
+              <span>¡Quiero organizarme ya!</span>
+              <i class="bi bi-arrow-right"></i>
+            </button>
+
+            <div class="cta-trust">
+              <div class="trust-item">
+                <i class="bi bi-shield-check"></i>
+                <span>Cancela cuando quieras</span>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
     </section>
 
+    <!-- Footer -->
     <footer class="footer">
-        <div class="container">
-            <!-- Top Footer Section -->
-            <div class="footer-top">
-                <div class="row gy-4">
-                    <!-- Brand Column -->
-                    <div class="col-lg-4">
-                        <div class="footer-brand">
-                            <h3 class="footer-logo">
-                                <i class="bi bi-check2-square"></i> TaskMaster
-                            </h3>
-                            <p class="footer-description">
-                                Ayudando a estudiantes a organizarse y triunfar desde el primer semestre hasta la graduación
-                            </p>
-                            <div class="social-links">
-                                <a href="#" class="social-link"><i class="bi bi-instagram"></i></a>
-                                <a href="#" class="social-link"><i class="bi bi-twitter"></i></a>
-                                <a href="#" class="social-link"><i class="bi bi-facebook"></i></a>
-                                <a href="#" class="social-link"><i class="bi bi-linkedin"></i></a>
-                            </div>
-                        </div>
-                    </div>
-    
-                    <!-- Quick Links -->
-                    <div class="col-lg-2 col-md-4">
-                        <h5 class="footer-title">Producto</h5>
-                        <ul class="footer-links">
-                            <li><a href="#features">Características</a></li>
-                            <li><a href="#pricing">Precios</a></li>
-                        </ul>
-                    </div>
-    
-                    <!-- Support Links -->
-                    <div class="col-lg-2 col-md-4">
-                        <h5 class="footer-title">Soporte</h5>
-                        <ul class="footer-links">
-                            <li><a href="#">Ayuda</a></li>
-                            <li><a href="#">Tutoriales</a></li>
-                            <li><a href="#">Contacto</a></li>
-                        </ul>
-                    </div>
-    
-                    <!-- Contact Info -->
-                    <div class="col-lg-4 col-md-4">
-                        <h5 class="footer-title">¡Mantente Conectado!</h5>
-                        <div class="footer-newsletter">
-                            <p>Recibe tips de productividad y ofertas especiales</p>
-                            <div class="newsletter-form">
-                                <input type="email" placeholder="tu@email.com" class="form-control">
-                                <button class="btn newsletter-btn">
-                                    <i class="bi bi-send"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+      <div class="container">
+        <!-- Top Footer Section -->
+        <div class="footer-top">
+          <div class="row gy-4">
+            <!-- Brand Column -->
+            <div class="col-lg-4">
+              <div class="footer-brand">
+                <h3 class="footer-logo">
+                  <i class="bi bi-check2-square"></i> TaskMaster
+                </h3>
+                <p class="footer-description">
+                  Ayudando a estudiantes a organizarse y triunfar desde el
+                  primer semestre hasta la graduación
+                </p>
+                <div class="social-links">
+                  <a href="#" class="social-link"
+                    ><i class="bi bi-instagram"></i
+                  ></a>
+                  <a href="#" class="social-link"
+                    ><i class="bi bi-twitter"></i
+                  ></a>
+                  <a href="#" class="social-link"
+                    ><i class="bi bi-facebook"></i
+                  ></a>
+                  <a href="#" class="social-link"
+                    ><i class="bi bi-linkedin"></i
+                  ></a>
                 </div>
+              </div>
             </div>
-    
-            <!-- Bottom Footer -->
-            <div class="footer-bottom">
-                <div class="row align-items-center">
-                    <div class="col-md-6">
-                        <p class="copyright">
-                            © 2024 TaskMaster. Todos los derechos reservados
-                        </p>
-                    </div>
+
+            <!-- Quick Links -->
+            <div class="col-lg-2 col-md-4">
+              <h5 class="footer-title">Producto</h5>
+              <ul class="footer-links">
+                <li><a href="#features">Características</a></li>
+                <li><a href="#pricing">Precios</a></li>
+              </ul>
+            </div>
+
+            <!-- Support Links -->
+            <div class="col-lg-2 col-md-4">
+              <h5 class="footer-title">Soporte</h5>
+              <ul class="footer-links">
+                <li><a href="#">Ayuda</a></li>
+                <li><a href="#">Tutoriales</a></li>
+                <li><a href="#">Contacto</a></li>
+              </ul>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="col-lg-4 col-md-4">
+              <h5 class="footer-title">¡Mantente Conectado!</h5>
+              <div class="footer-newsletter">
+                <p>Recibe tips de productividad y ofertas especiales</p>
+                <div class="newsletter-form">
+                  <input
+                    type="email"
+                    placeholder="tu@email.com"
+                    class="form-control"
+                  />
+                  <button class="btn newsletter-btn">
+                    <i class="bi bi-send"></i>
+                  </button>
                 </div>
+              </div>
             </div>
+          </div>
         </div>
+
+        <!-- Bottom Footer -->
+        <div class="footer-bottom">
+          <div class="row align-items-center">
+            <div class="col-md-6">
+              <p class="copyright">
+                © 2024 TaskMaster. Todos los derechos reservados
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </footer>
 
     <!-- Modal placeholders -->
     <div class="modal fade" id="loginModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <!-- Login form will be loaded here dynamically -->
-            </div>
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <!-- Login form will be loaded here dynamically -->
         </div>
+      </div>
     </div>
 
     <div class="modal fade" id="registerModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <!-- Register form will be loaded here dynamically -->
-            </div>
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <!-- Register form will be loaded here dynamically -->
         </div>
+      </div>
+    </div>
+    <div class="modal fade" id="paymentModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <!-- Payment form will be loaded here dynamically -->
+        </div>
+      </div>
     </div>
 
-    <div class="modal fade" id="createTaskModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <!-- Create task form will be loaded here dynamically -->
-            </div>
-        </div>
+    <!-- Overlay de carga -->
+    <div
+      id="loadingOverlay"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+      "
+    >
+      <lottie-player
+        id="loadingAnimation"
+        src="/animation.json"
+        background="transparent"
+        speed="1"
+        style="width: 300px; height: 300px"
+      ></lottie-player>
     </div>
-    
-    <div class="modal fade" id="editTaskModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <!-- Edit task form will be loaded here dynamically -->
-            </div>
-        </div>
-    </div>
-    
-    <div class="modal fade" id="subscriptionModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <!-- Subscription form will be loaded here dynamically -->
-            </div>
-        </div>
-    </div>
-
 
     <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  </body>
 </html>
