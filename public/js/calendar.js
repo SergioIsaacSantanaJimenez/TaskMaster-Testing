@@ -51,6 +51,30 @@ function tasksToEvents(tasks) {
     }));
 }
 
+async function updateTaskDate(taskId, newDate) {
+    try {
+        const response = await fetch(`/api/tasks/${taskId}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify({
+                dueDate: newDate
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('Error al actualizar la tarea');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error:', error);
+        throw error;
+    }
+}
+
 async function loadCalendarContent() {
     try {
         const mainContent = document.querySelector('.main-content');
@@ -111,6 +135,19 @@ async function loadCalendarContent() {
         const calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
             locale: 'es',
+            editable: true,
+            eventDrop: async function(info) {
+                try {
+                    const taskId = info.event.id;
+                    const newDate = info.event.start;
+                    
+                    await updateTaskDate(taskId, newDate);
+                    showNotification('Tarea actualizada', 'success');
+                } catch (error) {
+                    info.revert();
+                    showNotification('Error al actualizar', 'danger');
+                }
+            },
             headerToolbar: {
                 left: 'prev,next today',
                 center: 'title',
