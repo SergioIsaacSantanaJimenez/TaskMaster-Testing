@@ -301,8 +301,69 @@ function showNotification(message, type = 'success') {
     setTimeout(() => notification.remove(), 3000);
 }
 
-// Función para crear una nueva tarea
+// Función para verificar el plan del usuario y sus límites
+async function checkPlanUser() {
+    try {
+        // para agarrar su plan
+        const response = await fetch(`${API_URL}/user/profile`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+
+        if (!response.ok) throw new Error('Error al obtener el perfil del usuario');
+        const userData = await response.json();
+
+        // Obtener todas las tareas del usuario, quizá puedo optimizar esto y tomar la lenght de las tareas cuando se cargan inmediatamente pero meh, funciona
+        const tasksResponse = await fetch(`${API_URL}/api/tasks`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+
+        if (!tasksResponse.ok) throw new Error('Error al obtener las tareas');
+        const tasks = await tasksResponse.json();
+
+        // Verificar el plan y el número de tareas
+        if (userData.plan === 'free' && tasks.length >= 10) {
+            await Swal.fire({
+                title: 'Límite de tareas alcanzado',
+                html: `
+                    <p>Has alcanzado el límite de 10 tareas del plan gratuito.</p>
+                    <p>Actualiza a un plan PRO para tener tareas ilimitadas.</p>
+                `,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Actualizar Plan',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Redirigir al modal
+                    const actualModal = new bootstrap.Modal(document.getElementById('createTaskModal'));
+                    const paymentModal = new bootstrap.Modal(document.getElementById('paymentModal'));
+                    //actualModal.hide(); -hay que hacer que el modal de createTask se cierre xd
+                    paymentModal.show();                   
+                }
+            });
+            return false;
+        }
+        return true;
+    } catch (error) {
+        console.error('Error al verificar el plan:', error);
+        showNotification('Error al verificar el plan del usuario', 'danger');
+        return false;
+    }
+}
+
 async function createTask() {
+    // Verificar el plan y límites antes de crear la tarea
+    const validatorTasks = await checkPlanUser();
+    if (!validatorTasks) {
+        return;
+    }
+
     // Obtener los valores de los campos
     const title = document.getElementById('taskTitle').value;
     const description = document.getElementById('taskDescription').value;
