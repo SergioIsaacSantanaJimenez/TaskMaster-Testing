@@ -611,3 +611,252 @@ async function toggleTaskStatus(taskId, currentStatus) {
         showNotification(error.message, 'danger');
     }
 }
+
+
+////////////////////////////////////////// FILTROS ///////////////////////////////////////
+//variables globales para los filtros
+let currentFilters = {
+    search: '',
+    status: '',
+    sortBy: ''
+};
+
+// Event listeners para el DOM
+document.addEventListener('DOMContentLoaded', () => {
+    // Get filter
+    const searchInput = document.querySelector('.input-group input[type="text"]');
+    const statusSelect = document.querySelector('select:nth-of-type(1)');
+    const sortSelect = document.querySelector('select:nth-of-type(2)');
+
+    // Añadir event listeners
+    searchInput.addEventListener('input', blocker(function(e) {
+        currentFilters.search = e.target.value.toLowerCase();
+        applyFilters();
+    }, 300));
+
+    statusSelect.addEventListener('change', function(e) {
+        currentFilters.status = e.target.value;
+        applyFilters();
+    });
+
+    sortSelect.addEventListener('change', function(e) {
+        currentFilters.sortBy = e.target.value;
+        applyFilters();
+    });
+});
+
+//pa limitar la frecuencia con la que se aplica el filtro de búsquedafunction
+function blocker(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// aplay filters
+async function applyFilters() {
+    try {
+        console.log('Iniciando aplicación de filtros...');
+        console.log('Filtros actuales:', currentFilters);
+
+        const response = await fetch(`${API_URL}/api/tasks`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+        
+        if (!response.ok) throw new Error('Error al cargar las tareas');
+        
+        let tasks = await response.json();
+        console.log('Tareas originales:', tasks);
+
+        // Aplicar búsqueda
+        if (currentFilters.search) {
+            console.log('Aplicando filtro de búsqueda:', currentFilters.search);
+            tasks = tasks.filter(task => 
+                task.title.toLowerCase().includes(currentFilters.search) ||
+                (task.description && task.description.toLowerCase().includes(currentFilters.search))
+            );
+            console.log('Tareas después de búsqueda:', tasks);
+        }
+
+        // Aplicar filtro de estado
+        if (currentFilters.status) {
+            console.log('Aplicando filtro de estado:', currentFilters.status);
+            tasks = tasks.filter(task => task.status === currentFilters.status);
+            console.log('Tareas después de filtro de estado:', tasks);
+        }
+
+        // Aplicar ordenamiento con nueva lógica
+        if (currentFilters.sortBy) {
+            console.log('Aplicando ordenamiento:', currentFilters.sortBy);
+            
+            const priorityMap = {
+                'alta': 3,
+                'media': 2,
+                'baja': 1
+            };
+
+            tasks = tasks.sort((a, b) => {
+                switch (currentFilters.sortBy) {
+                    case 'date':
+                        // Convertir fechas a timestamps y comparar
+                        const dateA = new Date(a.dueDate);
+                        const dateB = new Date(b.dueDate);
+                        return dateA - dateB;
+                    
+                    case 'priority':
+                        // Si las prioridades son diferentes, ordenar por prioridad
+                        if (priorityMap[a.priority] !== priorityMap[b.priority]) {
+                            return priorityMap[b.priority] - priorityMap[a.priority];
+                        }
+                        // Si las prioridades son iguales, ordenar por fecha
+                        return new Date(a.dueDate) - new Date(b.dueDate);
+                    
+                    case 'name':
+                        // Ordenar por nombre, ignorando mayúsculas/minúsculas
+                        const nameA = a.title.toLowerCase();
+                        const nameB = b.title.toLowerCase();
+                        if (nameA < nameB) return -1;
+                        if (nameA > nameB) return 1;
+                        return 0;
+                    
+                    default:
+                        // Por defecto, ordenar por fecha
+                        return new Date(a.dueDate) - new Date(b.dueDate);
+                }
+            });
+
+            console.log('Tareas después de ordenar:', tasks);
+        }
+
+        // Actualizar UI
+        const tasksContainer = document.querySelector('#tasksContainer');
+        if (!tasksContainer) {
+            console.error('No se encontró el contenedor de tareas');
+            return;
+        }
+        tasksContainer.innerHTML = '';
+
+        if (tasks.length === 0) {
+            tasksContainer.innerHTML = `
+                <div class="col-12 text-center">
+                    <p class="text-muted">No se encontraron tareas que coincidan con los filtros</p>
+                </div>
+            `;
+            return;
+        }
+
+        tasks.forEach(task => {
+            const taskCard = `
+                <div class="col-xl-4 col-lg-6">
+                    <div class="card task-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <h5 class="card-title mb-0">${task.title}</h5>
+                                <div class="dropdown">
+                                    <button class="btn btn-link" type="button" data-bs-toggle="dropdown">
+                                        <i class="bi bi-three-dots-vertical"></i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <button class="dropdown-item" type="button" onclick="editTask('${task._id}')">
+                                                Editar
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button class="dropdown-item text-danger" type="button" onclick="deleteTask('${task._id}')">
+                                                Eliminar
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <p class="card-text text-muted">${task.description || 'Sin descripción'}</p>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="badge bg-${task.status === 'pendiente' ? 'secondary' : task.status === 'en_progreso' ? 'warning' : 'success'}">
+                                    ${task.status === 'pendiente' ? 'Pendiente' : 
+                                    task.status === 'en_progreso' ? 'En Progreso' : 'Completada'}
+                                </span>
+                                <span class="badge bg-${task.priority === 'baja' ? 'info' : task.priority === 'media' ? 'warning' : 'danger'}">
+                                    ${task.priority.charAt(0).toUpperCase() + task.priority.slice(1)} Prioridad
+                                </span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">Vence: ${formatDate(task.dueDate)}</small>
+                                <button class="btn btn-sm btn-${task.status === 'completada' ? 'success' : 'outline-success'}"
+                                        onclick="toggleTaskStatus('${task._id}', '${task.status}')">
+                                    ${task.status === 'completada' ? 'Completada' : 'Completar'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            tasksContainer.insertAdjacentHTML('beforeend', taskCard);
+        });
+
+    } catch (error) {
+        console.error('Error al aplicar filtros:', error);
+        showNotification('Error al filtrar las tareas', 'danger');
+    }
+}
+
+// reseteamos los filtros
+function resetFilters() {
+    currentFilters = {
+        search: '',
+        status: '',
+        sortBy: ''
+    };
+    
+    // reseteamos elementos
+    document.querySelector('.input-group input[type="text"]').value = '';
+    document.querySelector('select:nth-of-type(1)').value = '';
+    document.querySelector('select:nth-of-type(2)').value = '';
+    
+    // Reload
+    loadTasks();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM Cargado, configurando event listeners...');
+    
+    const searchInput = document.getElementById('searchInput');
+    const statusSelect = document.getElementById('statusFilter');
+    const sortSelect = document.getElementById('sortBy');
+
+    console.log('Elementos encontrados:', {
+        searchInput: !!searchInput,
+        statusSelect: !!statusSelect,
+        sortSelect: !!sortSelect
+    });
+
+    if (searchInput) {
+        searchInput.addEventListener('input', debounce(function(e) {
+            console.log('Evento de búsqueda:', e.target.value);
+            currentFilters.search = e.target.value.toLowerCase();
+            applyFilters();
+        }, 300));
+    }
+
+    if (statusSelect) {
+        statusSelect.addEventListener('change', function(e) {
+            console.log('Evento de cambio de estado:', e.target.value);
+            currentFilters.status = e.target.value;
+            applyFilters();
+        });
+    }
+
+    if (sortSelect) {
+        sortSelect.addEventListener('change', function(e) {
+            currentFilters.sortBy = e.target.value;
+            applyFilters();
+        });
+    }
+});
