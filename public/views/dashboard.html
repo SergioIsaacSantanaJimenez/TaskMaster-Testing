@@ -137,11 +137,16 @@
             <div class="col-md-4">
                 <div class="input-group">
                     <span class="input-group-text"><i class="bi bi-search"></i></span>
-                    <input type="text" class="form-control" placeholder="Buscar tareas...">
+                    <input 
+                        type="text" 
+                        id="searchInput"
+                        class="form-control" 
+                        placeholder="Buscar tareas..."
+                    >
                 </div>
             </div>
             <div class="col-md-4">
-                <select class="form-select">
+                <select id="statusFilter" class="form-select">
                     <option value="">Todos los estados</option>
                     <option value="pendiente">Pendiente</option>
                     <option value="en_progreso">En Progreso</option>
@@ -149,11 +154,11 @@
                 </select>
             </div>
             <div class="col-md-4">
-                <select class="form-select">
+                <select id="sortBy" class="form-select">
                     <option value="">Ordenar por</option>
-                    <option value="date">Fecha</option>
+                    <option value="dueDate">Fecha</option>
+                    <option value="title">Nombre</option>
                     <option value="priority">Prioridad</option>
-                    <option value="name">Nombre</option>
                 </select>
             </div>
         </div>
