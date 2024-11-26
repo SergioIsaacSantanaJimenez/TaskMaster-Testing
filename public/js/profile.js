@@ -31,10 +31,10 @@ async function loadDynamicProfile() {
 
                 <div class="row">
                     <div class="col-md-4">
-                        <div class="card mb-4">
+                        <div class="card mb-4" style="border: 4px solid #0d6efd;">
                             <div class="card-body text-center">
                                 <div class="mb-3">
-                                    <i class="bi bi-person-circle display-1 mb-3"></i>
+                                    <i class="bi bi-person-circle display-1 mb-3 text-primary"></i>
                                     <h4 id="profileName">${userData.name}</h4>
                                     <p id="profileEmail" class="text-muted">${userData.email}</p>
                                 </div>
@@ -43,17 +43,17 @@ async function loadDynamicProfile() {
                     </div>
 
                     <div class="col-md-8">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title mb-4">Información Personal</h5>
+                       <div class="card" style="border: 5px solid #0d6efd;">
+                              <div class="card-body">
+                                <h5 class="card-title mb-4 fw-bold fs-4">Información Personal</h5>
                                 <div class="mb-3">
-                                    <label class="text-muted">Nombre Completo</label>
+                                    <label class="text-primary fw-bold">Nombre Completo</label>
                                     <p id="fullName" class="mb-3">${userData.name}</p>
                                     
-                                    <label class="text-muted">Email</label>
+                                    <label class="text-primary fw-bold">Email</label>
                                     <p id="email" class="mb-3">${userData.email}</p>
                                     
-                                    <label class="text-muted">Fecha de Registro</label>
+                                    <label class="text-primary fw-bold">Fecha de Registro</label>
                                     <p id="registerDate" class="mb-3">${new Date(userData.createdAt).toLocaleDateString()}</p>
                                 </div>
                             </div>
