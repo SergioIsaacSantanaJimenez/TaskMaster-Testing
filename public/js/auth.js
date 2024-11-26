@@ -188,13 +188,13 @@ async function logout() {
         overlay.style.display = 'flex';
         animation.play();
         
-        /**const response = await fetch(`${API_URL}/logout`, {
+        const response = await fetch(`${API_URL}/logout`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
-        });**/
-
+        });
+       
         // Esperar 2 segundos para mostrar la animación
         await new Promise(resolve => setTimeout(resolve, 2000));
         
