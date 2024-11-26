@@ -87,11 +87,15 @@
                 </ul>
                 <div class="d-flex align-items-center">
                     <div class="dropdown me-3">
-                        <button class="btn btn-link text-dark text-decoration-none dropdown-toggle" type="button"
-                            id="userDropdown" data-bs-toggle="dropdown">
-                            <i class="bi bi-person-circle"></i>
-                            <span class="ms-2" id="userName">ERROR</span>
-                        </button>
+                        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" 
+                             id="userDropdown" 
+                            data-bs-toggle="dropdown" 
+                            aria-expanded="false">
+                                <img src="/images/default-profile.png" 
+                                class="rounded-circle navbar-profile-image"
+                                style="width: 32px; height: 32px; object-fit: cover">
+                                <span class="ms-2" id="userName">ERROR</span>
+                        </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" href="#profile"><i class="bi bi-person me-2"></i>Perfil</a>
                             </li>

@@ -3,6 +3,8 @@ const router = express.Router();
 const { authenticateToken } = require('../config/checkAuth');
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
+const multer = require('multer');
+const path = require('path');
 
 // Actualizar perfil de usuario
 router.put('/user/profile', authenticateToken, async (req, res) => {
@@ -29,6 +31,57 @@ router.put('/user/profile', authenticateToken, async (req, res) => {
     } catch (error) {
         console.error('Error al actualizar perfil:', error);
         res.status(500).json({ error: 'Error al actualizar perfil' });
+    }
+});
+
+function checkFileType(file, cb) {
+    // Tipos de archivo permitidos
+    const filetypes = /jpeg|jpg|png|gif/;
+    // Verificar extensión
+    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+    // Verificar mime type
+    const mimetype = filetypes.test(file.mimetype);
+
+    if (mimetype && extname) {
+        return cb(null, true);
+    } else {
+        cb('Error: Solo se permiten imágenes!');
+    }
+}
+
+// Configurar multer para el almacenamiento de imágenes
+const storage = multer.diskStorage({
+    destination: './public/uploads/profiles/',
+    filename: function(req, file, cb) {
+        cb(null, 'profile-' + Date.now() + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 1000000 }, // 1MB límite
+    fileFilter: function(req, file, cb) {
+        checkFileType(file, cb);
+    }
+});
+
+// Ruta para actualizar la foto
+router.post('/user/profile/image', authenticateToken, upload.single('profileImage'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: 'No se subió ninguna imagen' });
+        }
+
+        const imageUrl = `/uploads/profiles/${req.file.filename}`;
+        const user = await User.findByIdAndUpdate(
+            req.user.userId,
+            { profileImage: imageUrl },
+            { new: true }
+        );
+
+        res.json({ imageUrl });
+    } catch (error) {
+        res.status(500).json({ error: 'Error al subir la imagen' });
     }
 });
 

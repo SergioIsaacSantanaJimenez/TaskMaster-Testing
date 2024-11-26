@@ -25,6 +25,10 @@ const userSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
+    },
+    profileImage: {
+        type: String,
+        default: null  // URL de la imagen
     }
 }, { collection: 'usersTaskMaster' });
 
