@@ -3,9 +3,13 @@ const cors = require('cors');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 
+
 // Importar módulos
 const connectDB = require('./config/database');
 const auth = require('./config/checkAuth');
+const paymentRouter = require('./routes/payment');
+
+// Ruta para 
 
 // Configuración de Express
 const app = express();
@@ -19,6 +23,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Conectar a la base de datos
 connectDB();
+
+// Ruta para Stripe (No mover) 
+app.use('/api', paymentRouter);
 
 // Rutas públicas
 app.get('/', (req, res) => {

@@ -208,6 +208,8 @@ async function logout() {
         // Limpiar datos de sesión
         localStorage.removeItem('token');
         localStorage.removeItem('userName');
+        localStorage.removeItem('pending_session');
+        localStorage.removeItem('userData');
         updateUIOnAuth(); // Actualizar la UI después del logout
 
         // Mostrar mensaje de despedida

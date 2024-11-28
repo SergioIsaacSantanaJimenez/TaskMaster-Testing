@@ -81,12 +81,10 @@ function formatDate(dateString) {
 
 // Actualizar la función loadTasks para asegurarnos de que los botones de editar se generen correctamente
 async function loadTasks() {
-
     try {
         console.log('Iniciando carga de tareas...');
         updateUserNameDisplay();
         
-
         const response = await fetch(`${API_URL}/api/tasks`, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -95,9 +93,10 @@ async function loadTasks() {
         
         if (!response.ok) throw new Error('Error al cargar las tareas');
         
-        const tasks = await response.json();
+        const allTasks = await response.json();
+        // Filtrar solo tareas incompletas
+        const tasks = allTasks.filter(task => task.status !== 'completada');
         console.log('Tareas recibidas:', tasks);
-
         
         const tasksContainer = document.querySelector('#tasksContainer');
         if (!tasksContainer) {
@@ -110,11 +109,10 @@ async function loadTasks() {
         if (tasks.length === 0) {
             tasksContainer.innerHTML = `
                 <div class="col-12 text-center">
-                    <p class="text-muted">No hay tareas creadas. ¡Crea tu primera tarea!</p>
+                    <p class="text-muted">No hay tareas pendientes. ¡Buen trabajo!</p>
                 </div>
             `;
-
-            
+            return;
         }
 
         tasks.forEach(task => {
@@ -153,9 +151,8 @@ async function loadTasks() {
                             </div>
                             <p class="card-text text-muted">${task.description || 'Sin descripción'}</p>
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <span class="badge bg-${task.status === 'pendiente' ? 'secondary' : task.status === 'en_progreso' ? 'warning' : 'success'}">
-                                    ${task.status === 'pendiente' ? 'Pendiente' : 
-                                    task.status === 'en_progreso' ? 'En Progreso' : 'Completada'}
+                                <span class="badge bg-${task.status === 'pendiente' ? 'secondary' : 'warning'}">
+                                    ${task.status === 'pendiente' ? 'Pendiente' : 'En Progreso'}
                                 </span>
                                 <span class="badge bg-${task.priority === 'baja' ? 'info' : task.priority === 'media' ? 'warning' : 'danger'}">
                                     ${task.priority.charAt(0).toUpperCase() + task.priority.slice(1)} Prioridad
@@ -163,9 +160,9 @@ async function loadTasks() {
                             </div>
                             <div class="d-flex justify-content-between align-items-center">
                                 <small class="text-muted">Vence: ${formatDate(task.dueDate)}</small>
-                                <button class="btn btn-sm btn-${task.status === 'completada' ? 'success' : 'outline-success'}"
+                                <button class="btn btn-sm btn-outline-success"
                                         onclick="toggleTaskStatus('${task._id}', '${task.status}')">
-                                    ${task.status === 'completada' ? 'Completada' : 'Completar'}
+                                    Completar
                                 </button>
                             </div>
                         </div>
@@ -176,21 +173,15 @@ async function loadTasks() {
         });
         
         console.log('Tareas cargadas exitosamente');
-
-        
         
     } catch (error) {
         console.error('Error al cargar las tareas:', error);
-        
-        
-        // Primero mostrar la alerta
         await Swal.fire({
             title: 'Error',
             text: error.message,
             icon: 'error',
             confirmButtonText: 'Aceptar'
         });
-        
     }
 }
 
@@ -340,11 +331,13 @@ async function checkPlanUser() {
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {
+                    /*
                     // Redirigir al modal
                     const actualModal = new bootstrap.Modal(document.getElementById('createTaskModal'));
                     const paymentModal = new bootstrap.Modal(document.getElementById('paymentModal'));
                     //actualModal.hide(); -hay que hacer que el modal de createTask se cierre xd
-                    paymentModal.show();                   
+                    paymentModal.show();      */
+                    handleProUpgrade()
                 }
             });
             return false;
@@ -368,6 +361,7 @@ async function createTask() {
     const title = document.getElementById('taskTitle').value;
     const description = document.getElementById('taskDescription').value;
     const dueDate = document.getElementById('taskDueDate').value;
+    const dueTime = document.getElementById('taskDueTime').value || '23:59';
     const priority = document.getElementById('taskPriority').value;
     const status = document.getElementById('taskStatus').value;
 
@@ -377,10 +371,12 @@ async function createTask() {
         return;
     }
 
+    const dueDateTimeStr = `${dueDate}T${dueTime}`;
+
     const taskData = {
         title,
         description,
-        dueDate,
+        dueDate: new Date(dueDateTimeStr),
         priority,
         status
     };
@@ -409,6 +405,7 @@ async function createTask() {
         document.getElementById('taskTitle').value = '';
         document.getElementById('taskDescription').value = '';
         document.getElementById('taskDueDate').value = '';
+        document.getElementById('taskDueTime').value = '';
         document.getElementById('taskPriority').value = 'baja';
         document.getElementById('taskStatus').value = 'pendiente';
         
@@ -435,6 +432,7 @@ async function createTask() {
 let currentEditingTaskId = null;
 
 // Función para abrir el modal de edición y cargar los datos de la tarea
+// Función para abrir el modal de edición y cargar los datos de la tarea
 async function editTask(taskId) {
     try {
         // Obtener los datos de la tarea
@@ -453,16 +451,91 @@ async function editTask(taskId) {
         const editTaskModal = new bootstrap.Modal(document.getElementById('editTaskModal'));
         editTaskModal.show();
 
+        // Convertir la fecha ISO a objeto Date
+        const taskDate = new Date(task.dueDate);
+        
+        // Formatear la fecha para el input date (YYYY-MM-DD)
+        const formattedDate = taskDate.toISOString().split('T')[0];
+        
+        // Formatear la hora para el input time (HH:mm)
+        const formattedTime = taskDate.toTimeString().slice(0,5);
+
         // Después de que el modal esté visible, establecer los valores
         document.getElementById('editTaskTitle').value = task.title;
         document.getElementById('editTaskDescription').value = task.description || '';
-        document.getElementById('editTaskDueDate').value = task.dueDate.split('T')[0];
+        document.getElementById('editTaskDueDate').value = formattedDate;
+        document.getElementById('editTaskDueTime').value = formattedTime;
         document.getElementById('editTaskPriority').value = task.priority;
         document.getElementById('editTaskStatus').value = task.status;
 
     } catch (error) {
         console.error('Error:', error);
         showNotification('Error al cargar los datos de la tarea', 'danger');
+    }
+}
+
+// Y la función updateTask() también necesita ser actualizada:
+async function updateTask() {
+    if (!currentEditingTaskId) {
+        showNotification('Error: No se encontró la tarea a editar', 'danger');
+        return;
+    }
+
+    // Obtener los valores actualizados
+    const title = document.getElementById('editTaskTitle').value;
+    const description = document.getElementById('editTaskDescription').value;
+    const dueDate = document.getElementById('editTaskDueDate').value;
+    const dueTime = document.getElementById('editTaskDueTime').value || '23:59';
+    const priority = document.getElementById('editTaskPriority').value;
+    const status = document.getElementById('editTaskStatus').value;
+
+    // Validar campos requeridos
+    if (!title || !dueDate || !priority || !status) {
+        showNotification('Por favor, complete todos los campos requeridos', 'danger');
+        return;
+    }
+
+    // Combinar fecha y hora
+    const dueDateTimeStr = `${dueDate}T${dueTime}`;
+
+    const taskData = {
+        title,
+        description,
+        dueDate: new Date(dueDateTimeStr),
+        priority,
+        status
+    };
+
+    try {
+        const response = await fetch(`${API_URL}/api/tasks/${currentEditingTaskId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify(taskData)
+        });
+
+        if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.error || 'Error al actualizar la tarea');
+        }
+
+        // Cerrar el modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('editTaskModal'));
+        modal.hide();
+        
+        // Mostrar notificación de éxito
+        showNotification('¡Tarea actualizada exitosamente!');
+        
+        // Recargar las tareas
+        loadTasks();
+        
+        // Limpiar el ID de la tarea actual
+        currentEditingTaskId = null;
+
+    } catch (error) {
+        showNotification(error.message, 'danger');
     }
 }
 
@@ -557,60 +630,6 @@ async function toggleTaskStatus(taskId, currentStatus) {
     }
 }
 
-// Función para actualizar una tarea
-async function updateTask() {
-    if (!currentEditingTaskId) {
-        showNotification('Error: No se encontró la tarea a editar', 'danger');
-        return;
-    }
-
-    // Obtener los valores actualizados
-    const taskData = {
-        title: document.getElementById('editTaskTitle').value,
-        description: document.getElementById('editTaskDescription').value,
-        dueDate: document.getElementById('editTaskDueDate').value,
-        priority: document.getElementById('editTaskPriority').value,
-        status: document.getElementById('editTaskStatus').value
-    };
-
-    // Validar campos requeridos
-    if (!taskData.title || !taskData.dueDate || !taskData.priority || !taskData.status) {
-        showNotification('Por favor, complete todos los campos requeridos', 'danger');
-        return;
-    }
-
-    try {
-        const response = await fetch(`${API_URL}/api/tasks/${currentEditingTaskId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            },
-            body: JSON.stringify(taskData)
-        });
-
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.error || 'Error al actualizar la tarea');
-        }
-
-        // Cerrar el modal
-        const modal = bootstrap.Modal.getInstance(document.getElementById('editTaskModal'));
-        modal.hide();
-        
-        // Mostrar notificación de éxito
-        showNotification('¡Tarea actualizada exitosamente!');
-        
-        // Recargar las tareas
-        loadTasks();
-        
-        // Limpiar el ID de la tarea actual
-        currentEditingTaskId = null;
-
-    } catch (error) {
-        showNotification(error.message, 'danger');
-    }
-}
 
 // Función para eliminar una tarea con confirmación usando SweetAlert
 async function deleteTask(taskId) {
