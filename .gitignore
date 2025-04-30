@@ -1,0 +1,5 @@
+/node_modules
+babel.config.js
+config/checkAuth.test.js
+config/database.test.js
+jest.config.js
